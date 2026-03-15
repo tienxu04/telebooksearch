@@ -7,6 +7,5 @@ services:
     envVars:
       - key: TELEGRAM_TOKEN
         sync: false
-        sync: false
       - key: SHEET_CSV_URL
         sync: false
