@@ -38,7 +38,7 @@ RULE_REMINDER = (
 # ── Fetch & search ────────────────────────────────────────────────────────────
 
 async def fetch_books() -> list[dict]:
-    async with httpx.AsyncClient(timeout=15) as client:
+    async with httpx.AsyncClient(timeout=15, follow_redirects=True) as client:
         resp = await client.get(SHEET_CSV_URL)
         resp.raise_for_status()
         reader = csv.DictReader(io.StringIO(resp.text))
