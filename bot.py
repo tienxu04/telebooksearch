@@ -54,12 +54,39 @@ def fuzzy_search(books: list[dict], query: str) -> list[dict]:
     scored.sort(key=lambda x: x[0], reverse=True)
     return [b for _, b in scored]
 
+# ── Country flags ─────────────────────────────────────────────────────────────
+
+COUNTRY_FLAGS = {
+    "Mỹ": "🇺🇸", "Đức": "🇩🇪", "Úc": "🇦🇺", "Anh": "🇬🇧",
+    "Hàn Quốc": "🇰🇷", "Việt Nam": "🇻🇳", "Nhật": "🇯🇵",
+    "Thụy Điển": "🇸🇪", "Pháp": "🇫🇷", "Bồ Đào Nha": "🇵🇹",
+    "Czech": "🇨🇿", "Brazil": "🇧🇷", "Đan Mạch": "🇩🇰",
+    "Bỉ": "🇧🇪", "Phần Lan": "🇫🇮", "Trung Quốc": "🇨🇳",
+    "Ba Lan": "🇵🇱", "Thụy Sĩ": "🇨🇭", "Đài Loan": "🇹🇼",
+    "Ireland": "🇮🇪", "Afghanistan": "🇦🇫", "Na Uy": "🇳🇴",
+    "Hong Kong": "🇭🇰", "Ý": "🇮🇹", "Thái Lan": "🇹🇭",
+    "Israel": "🇮🇱", "Triều Tiên": "🇰🇵", "Hà Lan": "🇳🇱",
+    "Hungary": "🇭🇺", "Belarus": "🇧🇾", "Nga": "🇷🇺",
+    "Trung": "🇨🇳",
+}
+
+def country_flag(country: str) -> str:
+    return COUNTRY_FLAGS.get(country) or "🌍"
+
+def escape_md(s: str) -> str:
+    return s.replace("*", "\\*").replace("_", "\\_")
+
 # ── Format ────────────────────────────────────────────────────────────────────
 
 def format_book(i: int, b: dict) -> str:
+    title   = escape_md(b.get(COL_TITLE, "?"))
+    author  = escape_md(b.get(COL_AUTHOR, "?"))
+    country = b.get(COL_COUNTRY, "")
+    genre   = b.get(COL_GENRE, "")
+    flag    = country_flag(country)
     entry = (
-        f"{i}. 📖 *{b.get(COL_TITLE, '?')}*\n"
-        f"    👤 {b.get(COL_AUTHOR, '?')}  ·  🌍 {b.get(COL_COUNTRY, '')}  ·  🏷️ {b.get(COL_GENRE, '')}"
+        f"{i}. 📖 *{title}*\n"
+        f"    👤 {author}  ·  {flag} {country}  ·  🏷️ {genre}"
     )
     if b.get(COL_LINK):
         entry += f"\n    🔗 {b[COL_LINK]}"
@@ -104,9 +131,9 @@ async def send_results(send_fn, results: list[dict], query: str, offset: int = 0
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "📚 *Tìm sách của xuxu*\n\n"
+        "📚 *Tìm review @ xuxudocsach*\n\n"
         "Gõ tên sách — hoặc một phần tên — mình sẽ tìm!\n\n"
-        "VD: `ove`, `dong cam`, `housemaid`, `Saramago`",
+        "VD: `ông ove`, `dong cam`, `housemaid`, `Saramago`",
         parse_mode="Markdown",
     )
 
