@@ -87,13 +87,13 @@ def escape_md(s: str) -> str:
 # ── Format ────────────────────────────────────────────────────────────────────
 
 def format_book(i: int, b: dict) -> str:
-    title   = escape_md(b.get(COL_TITLE, "?"))
-    author  = escape_md(b.get(COL_AUTHOR, "?"))
+    title   = b.get(COL_TITLE, "?")
+    author  = b.get(COL_AUTHOR, "?")
     country = b.get(COL_COUNTRY, "")
     genre   = b.get(COL_GENRE, "")
     flag    = country_flag(country)
     entry = (
-        f"{i}. 📖 *{title}*\n"
+        f"{i}. 📖 {title}\n"
         f"    👤 {author}  ·  {flag} {country}  ·  🏷️ {genre}"
     )
     if b.get(COL_LINK):
@@ -123,15 +123,13 @@ async def send_results(send_fn, results: list[dict], query: str, offset: int = 0
     if new_offset < total:
         await send_fn(
             text,
-            parse_mode="Markdown",
             disable_web_page_preview=True,
             reply_markup=more_button(query, new_offset, total),
         )
     else:
-        suffix = "\n\n_Vậy là hết rồi!_" if offset > 0 else ""
+        suffix = "\n\nVậy là hết rồi!" if offset > 0 else ""
         await send_fn(
             text + suffix,
-            parse_mode="Markdown",
             disable_web_page_preview=True,
         )
 
@@ -139,10 +137,9 @@ async def send_results(send_fn, results: list[dict], query: str, offset: int = 0
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "📚 *Tìm sách của xuxu*\n\n"
+        "📚 Tìm sách của xuxu\n\n"
         "Gõ tên sách — hoặc một phần tên — mình sẽ tìm!\n\n"
-        "VD: `ove`, `dong cam`, `housemaid`, `Saramago`",
-        parse_mode="Markdown",
+        "VD: ove, dong cam, housemaid, Saramago"
     )
 
 async def search(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -163,8 +160,7 @@ async def search(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if not results:
         await update.message.reply_text(
-            f"📭 Trong danh sách chưa có sách nào khớp với *\"{query}\"*.",
-            parse_mode="Markdown",
+            f"📭 Trong danh sách chưa có sách nào khớp với \"{query}\"."
         )
         return
 
