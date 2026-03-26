@@ -80,7 +80,9 @@ def country_flag(country: str) -> str:
     return COUNTRY_FLAGS.get(country) or "🌍"
 
 def escape_md(s: str) -> str:
-    return s.replace("*", "\\*").replace("_", "\\_")
+    for ch in ["*", "_", "`", "[", "]"]:
+        s = s.replace(ch, f"\\{ch}")
+    return s
 
 # ── Format ────────────────────────────────────────────────────────────────────
 
