@@ -52,6 +52,12 @@ def fuzzy_search(books: list[dict], query: str) -> list[dict]:
         if score >= THRESHOLD:
             scored.append((score, b))
     scored.sort(key=lambda x: x[0], reverse=True)
+
+    # Nếu có perfect match (score 100) thì chỉ trả những cuốn đó thôi
+    perfect = [b for score, b in scored if score == 100]
+    if perfect:
+        return perfect
+
     return [b for _, b in scored]
 
 # ── Country flags ─────────────────────────────────────────────────────────────
@@ -131,9 +137,9 @@ async def send_results(send_fn, results: list[dict], query: str, offset: int = 0
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "📚 *Tìm review @ xuxudocsach*\n\n"
+        "📚 *Tìm sách của xuxu*\n\n"
         "Gõ tên sách — hoặc một phần tên — mình sẽ tìm!\n\n"
-        "VD: `ông ove`, `dong cam`, `housemaid`, `Saramago`",
+        "VD: `ove`, `dong cam`, `housemaid`, `Saramago`",
         parse_mode="Markdown",
     )
 
